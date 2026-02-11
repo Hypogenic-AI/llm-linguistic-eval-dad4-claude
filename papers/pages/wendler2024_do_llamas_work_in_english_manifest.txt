@@ -1,0 +1,15 @@
+PDF: /workspaces/llm-linguistic-eval-dad4-claude/papers/wendler2024_do_llamas_work_in_english.pdf
+Total pages: 29
+Pages per chunk: 3
+
+Chunks:
+  wendler2024_do_llamas_work_in_english_chunk_001.pdf: pages 1-3
+  wendler2024_do_llamas_work_in_english_chunk_002.pdf: pages 4-6
+  wendler2024_do_llamas_work_in_english_chunk_003.pdf: pages 7-9
+  wendler2024_do_llamas_work_in_english_chunk_004.pdf: pages 10-12
+  wendler2024_do_llamas_work_in_english_chunk_005.pdf: pages 13-15
+  wendler2024_do_llamas_work_in_english_chunk_006.pdf: pages 16-18
+  wendler2024_do_llamas_work_in_english_chunk_007.pdf: pages 19-21
+  wendler2024_do_llamas_work_in_english_chunk_008.pdf: pages 22-24
+  wendler2024_do_llamas_work_in_english_chunk_009.pdf: pages 25-27
+  wendler2024_do_llamas_work_in_english_chunk_010.pdf: pages 28-29

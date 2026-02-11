@@ -1,0 +1,193 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Overall Accuracy}
+\label{sec:overall}
+
+\tabref{tab:mgsm_results} and \tabref{tab:belebele_results} report accuracy across all conditions for \mgsm and \belebele, respectively.
+
+\para{\mgsm results.}
+\claudemodel achieves strong performance under \directstrat inference (average 0.935, range 0.90--0.98), with several non-English languages exceeding English accuracy: German (0.98), Chinese and Bengali (both 0.96 and 0.94, respectively). \gptmodel shows substantially lower \directstrat performance (average 0.600), but recovers to 0.915 under \englishcot, narrowing the gap with \claudemodel.
+
+\para{\belebele results.}
+Both models achieve high accuracy, with \claudemodel reaching 0.970 average under \directstrat and \gptmodel reaching 0.938. Hindi is the consistent outlier, scoring 0.82--0.90 across all conditions, while most other languages reach 0.94--1.00.
+
+\begin{table}[t]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}llcccccccc|c@{}}
+        \toprule
+        \textbf{Model} & \textbf{Strategy} & \textbf{EN} & \textbf{ZH} & \textbf{DE} & \textbf{FR} & \textbf{RU} & \textbf{JA} & \textbf{SW} & \textbf{BN} & \textbf{Avg} \\
+        \midrule
+        \multirow{3}{*}{\gptmodel}
+        & \directstrat     & .640 & .520 & .560 & .680 & .700 & .500 & .640 & .560 & .600 \\
+        & \selftranslate   & .600 & .940 & .960 & .860 & .960 & .860 & .820 & .900 & .862 \\
+        & \englishcot      & .940 & .940 & .960 & .900 & .940 & .880 & .840 & .920 & .915 \\
+        \midrule
+        \multirow{3}{*}{\claudemodel}
+        & \directstrat     & .920 & .960 & {\bf .980} & .940 & .940 & .900 & .900 & .940 & {\bf .935} \\
+        & \selftranslate   & .920 & .940 & .960 & .940 & .940 & .920 & .880 & .940 & .930 \\
+        & \englishcot      & {\bf 1.000} & .960 & .940 & .960 & .960 & .900 & .840 & .940 & .938 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{\mgsm accuracy by model, strategy, and language. \claudemodel achieves strong performance under \directstrat inference with no chain-of-thought, while \gptmodel requires explicit reasoning steps. Bold indicates best per-column result.}
+    \label{tab:mgsm_results}
+\end{table}
+
+\begin{table}[t]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}llcccccccc|c@{}}
+        \toprule
+        \textbf{Model} & \textbf{Strategy} & \textbf{EN} & \textbf{ZH} & \textbf{DE} & \textbf{FR} & \textbf{RU} & \textbf{JA} & \textbf{SW} & \textbf{HI} & \textbf{Avg} \\
+        \midrule
+        \multirow{3}{*}{\gptmodel}
+        & \directstrat     & {\bf 1.000} & .920 & .920 & .940 & .980 & .940 & .980 & .820 & .938 \\
+        & \selftranslate   & {\bf 1.000} & .960 & .940 & .940 & .980 & .980 & .980 & .800 & .948 \\
+        & \englishcot      & {\bf 1.000} & .940 & .960 & .980 & .980 & .940 & .980 & .820 & .950 \\
+        \midrule
+        \multirow{3}{*}{\claudemodel}
+        & \directstrat     & {\bf 1.000} & {\bf 1.000} & .960 & .940 & {\bf 1.000} & .960 & {\bf 1.000} & {\bf .900} & {\bf .970} \\
+        & \selftranslate   & {\bf 1.000} & {\bf 1.000} & .960 & .940 & {\bf 1.000} & .960 & {\bf 1.000} & .880 & .968 \\
+        & \englishcot      & {\bf 1.000} & {\bf 1.000} & .960 & {\bf .960} & .980 & {\bf .980} & .960 & .880 & .965 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{\belebele accuracy by model, strategy, and language. Both models achieve near-ceiling performance, with Hindi as the consistent weak spot. Bold indicates best per-column result.}
+    \label{tab:belebele_results}
+\end{table}
+
+\subsection{H1: English Advantage}
+\label{sec:h1}
+
+\tabref{tab:h1_results} reports the mean performance gap (English minus non-English average), $t$-statistics, $p$-values, and Cohen's $d$ for each model--strategy--task combination.
+
+\begin{table}[t]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lllrrrrl@{}}
+        \toprule
+        \textbf{Task} & \textbf{Model} & \textbf{Strategy} & \textbf{Mean Gap} & $t$ & $p$ & \textbf{Cohen's} $d$ & \textbf{Sig.} \\
+        \midrule
+        \mgsm & \gptmodel & \directstrat       &  0.046 &  1.53 & 0.176 & 0.58 & n.s. \\
+        \mgsm & \gptmodel & \selftranslate      & $-$0.300 & $-$14.33 & $<$0.001 & $-$5.42 & *** \\
+        \mgsm & \gptmodel & \englishcot         &  0.029 &  1.83 & 0.118 & 0.69 & n.s. \\
+        \mgsm & \claudemodel & \directstrat     & $-$0.017 & $-$1.55 & 0.172 & $-$0.59 & n.s. \\
+        \mgsm & \claudemodel & \selftranslate   & $-$0.011 & $-$1.19 & 0.280 & $-$0.45 & n.s. \\
+        \mgsm & \claudemodel & \englishcot      &  0.071 &  4.25 & 0.005 & 1.60 & ** \\
+        \midrule
+        \belebele & \gptmodel & \directstrat    &  0.071 &  3.50 & 0.013 & 1.32 & * \\
+        \belebele & \gptmodel & \selftranslate  &  0.060 &  2.47 & 0.049 & 0.93 & * \\
+        \belebele & \gptmodel & \englishcot     &  0.057 &  2.65 & 0.038 & 1.00 & * \\
+        \belebele & \claudemodel & \directstrat &  0.034 &  2.40 & 0.053 & 0.91 & n.s. \\
+        \belebele & \claudemodel & \selftranslate & 0.037 & 2.24 & 0.066 & 0.85 & n.s. \\
+        \belebele & \claudemodel & \englishcot  &  0.040 &  2.76 & 0.033 & 1.04 & * \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{H1: Performance gap between English and non-English languages. Negative gaps indicate non-English languages outperform English. \gptmodel \selftranslate shows a large negative gap because \directstrat English accuracy (0.64) is depressed by the no-reasoning prompt format. Significance: * $p < 0.05$, ** $p < 0.01$, *** $p < 0.001$.}
+    \label{tab:h1_results}
+\end{table}
+
+Three findings stand out. First, \claudemodel shows {\bf no significant English advantage} on \mgsm under \directstrat or \selftranslate ($p = 0.17$ and $p = 0.28$). Several non-English languages actually outperform English (\eg German at 0.98 vs.\ English at 0.92). Second, \gptmodel shows a {\bf significant English advantage on \belebele} (mean gap 0.06--0.07, $p < 0.05$), driven primarily by Hindi (0.82 vs.\ English 1.00). Third, the large negative gap for \gptmodel \mgsm \selftranslate ($-$0.30, $p < 0.001$) is artifactual: it reflects the fact that English \directstrat accuracy (0.64) is depressed by the no-reasoning prompt, while \selftranslate adds chain-of-thought reasoning that boosts all languages.
+
+\subsection{H2: English-Pivoting Strategies}
+\label{sec:h2}
+
+\tabref{tab:h2_results} reports the mean accuracy lift from \selftranslate and \englishcot relative to \directstrat, computed over non-English languages only.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}lllrrrl@{}}
+        \toprule
+        \textbf{Task} & \textbf{Model} & \textbf{Strategy} & \textbf{Mean Lift} & $t$ & $p$ \textbf{(one-sided)} & \textbf{Sig.} \\
+        \midrule
+        \mgsm & \gptmodel & \selftranslate    & $+$0.306 &  8.10 & $<$0.001 & *** \\
+        \mgsm & \gptmodel & \englishcot       & $+$0.317 &  8.98 & $<$0.001 & *** \\
+        \mgsm & \claudemodel & \selftranslate & $-$0.006 & $-$1.00 & 0.822 & n.s. \\
+        \mgsm & \claudemodel & \englishcot    & $-$0.009 & $-$0.75 & 0.759 & n.s. \\
+        \midrule
+        \belebele & \gptmodel & \selftranslate    & $+$0.011 &  1.33 & 0.115 & n.s. \\
+        \belebele & \gptmodel & \englishcot       & $+$0.014 &  1.99 & 0.047 & * \\
+        \belebele & \claudemodel & \selftranslate & $-$0.003 & $-$1.00 & 0.822 & n.s. \\
+        \belebele & \claudemodel & \englishcot    & $-$0.006 & $-$0.68 & 0.739 & n.s. \\
+        \bottomrule
+    \end{tabular}
+    \caption{H2: Strategy lift over \directstrat for non-English languages. \gptmodel shows large lift on \mgsm, but this is attributable to chain-of-thought reasoning (English itself improves from 0.64 to 0.94). \claudemodel shows no benefit from English pivoting.}
+    \label{tab:h2_results}
+\end{table}
+
+The apparent benefit of English-pivoting strategies for \gptmodel on \mgsm ($+$0.31 for both strategies) is misleading. English itself improves by $+$0.30 from \directstrat (0.64) to \englishcot (0.94), demonstrating that the lift is a {\bf chain-of-thought effect, not a translation effect}. To isolate the translation component, we compare \selftranslate against \englishcot for non-English \mgsm inputs: \selftranslate achieves a mean of 0.90 versus \englishcot at 0.92, a difference of only 0.02. This confirms that explicit translation to English adds negligible value once step-by-step reasoning is present.
+
+\claudemodel shows {\bf zero benefit} from either English-pivoting strategy on both benchmarks. Its \directstrat accuracy already reaches 0.935 (\mgsm) and 0.970 (\belebele), leaving little room for improvement and suggesting that its internal multilingual processing is already efficient.
+
+\subsection{H3: Resource Level Correlation}
+\label{sec:h3}
+
+\tabref{tab:h3_results} reports Spearman rank correlations between language resource level (coded as high=3, medium=2, low=1) and \directstrat accuracy.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}llrrl@{}}
+        \toprule
+        \textbf{Task} & \textbf{Model} & \textbf{Spearman} $\rho$ & $p$ & \textbf{Sig.} \\
+        \midrule
+        \mgsm & \gptmodel & $-$0.086 & 0.855 & n.s. \\
+        \mgsm & \claudemodel & 0.693 & 0.084 & n.s. \\
+        \belebele & \gptmodel & $-$0.496 & 0.258 & n.s. \\
+        \belebele & \claudemodel & $-$0.222 & 0.632 & n.s. \\
+        \bottomrule
+    \end{tabular}
+    \caption{H3: Spearman correlation between language resource level and \directstrat accuracy. No significant correlations are observed, suggesting resource level does not predict performance for frontier models.}
+    \label{tab:h3_results}
+\end{table}
+
+No significant correlation is observed in any condition (all $p > 0.08$). Notably, low-resource Swahili achieves 1.00 accuracy on \belebele for \claudemodel, outperforming high-resource French (0.94). The expected pattern of high $>$ medium $>$ low resource performance is not consistently observed.
+
+\subsection{H4: Model Comparison}
+\label{sec:h4}
+
+\Figref{fig:model_comparison} shows side-by-side accuracy for both models under \directstrat inference. \claudemodel substantially outperforms \gptmodel on \mgsm \directstrat (0.935 vs.\ 0.600), though this reflects \gptmodel's sensitivity to the no-reasoning prompt format. Under \englishcot, the gap narrows to 0.938 vs.\ 0.915. On \belebele, \claudemodel achieves 0.970 vs.\ \gptmodel's 0.938, with more consistent performance across languages (range 0.90--1.00 vs.\ 0.82--1.00).
+
+\begin{figure}[t]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/mgsm_model_comparison.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/belebele_model_comparison.png}
+    \end{minipage}
+    \caption{Model comparison on \mgsm (left) and \belebele (right) under all three prompting strategies. \claudemodel shows more consistent cross-language performance, while \gptmodel benefits substantially from explicit reasoning scaffolding on \mgsm.}
+    \label{fig:model_comparison}
+\end{figure}
+
+\subsection{Democratization Scores}
+\label{sec:democratization}
+
+\tabref{tab:democratization} reports democratization scores (average accuracy / best-language accuracy) for each condition. \claudemodel achieves consistently high scores (0.938--0.970), indicating near-perfect cross-language equity. \gptmodel's low \mgsm \directstrat score (0.857) reflects its format sensitivity rather than genuine language bias.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}llccc@{}}
+        \toprule
+        \textbf{Task} & \textbf{Model} & \textbf{\directstrat} & \textbf{\selftranslate} & \textbf{\englishcot} \\
+        \midrule
+        \mgsm & \gptmodel & 0.857 & 0.898 & 0.953 \\
+        \mgsm & \claudemodel & {\bf 0.954} & {\bf 0.969} & 0.938 \\
+        \belebele & \gptmodel & 0.938 & 0.948 & 0.950 \\
+        \belebele & \claudemodel & {\bf 0.970} & {\bf 0.968} & {\bf 0.965} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Democratization scores (average accuracy / best-language accuracy). Higher is better; 1.0 indicates perfect equity. \claudemodel achieves consistently higher equity across conditions. Bold indicates best per-row result.}
+    \label{tab:democratization}
+\end{table}

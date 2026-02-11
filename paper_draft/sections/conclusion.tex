@@ -1,0 +1,12 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented a systematic evaluation of multilingual performance in two frontier LLMs across 8 languages, 3 prompting strategies, and 2 benchmarks, comprising 4{,}800 API calls. Our findings update and partially contradict the prevailing narrative about English dominance in LLM processing.
+
+First, frontier models have largely closed the multilingual performance gap. \claudemodel shows near-perfect cross-language equity with a democratization score of 0.97, and no statistically significant English advantage on \mgsm direct inference. Second, English-pivoting strategies no longer provide meaningful benefits: the apparent lift from self-translation is attributable to chain-of-thought reasoning, not to translation itself. Third, language resource level does not predict performance in our data, suggesting progress on lower-resource languages. Fourth, \gptmodel's sensitivity to prompt format---not language---drives its performance variation, underscoring the importance of controlling for reasoning scaffolding in multilingual evaluations.
+
+These results suggest that the implicit English-processing bottleneck documented in earlier work~\cite{wendler2024llamas, etxaniz2023multilingual} has been substantially mitigated in 2025--2026 frontier models. For practitioners, this means multilingual deployment no longer requires English-pivoting workarounds. For researchers, it motivates investigation of whether the internal English bias persists mechanistically even as behavioral gaps close, and whether the progress extends to truly low-resource languages (\eg Yoruba, Quechua) and generative tasks beyond the benchmarks studied here.
+
+\section*{Reproducibility Statement}
+
+All code, data, and results are publicly available. Experiments use fixed random seeds (seed=42), deterministic decoding (temperature=0), and standardized benchmarks (\mgsm and \belebele). API calls were made to \gptmodel via the OpenAI API and \claudemodel via OpenRouter on February~11, 2026.

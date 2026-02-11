@@ -1,0 +1,35 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The Disappearing English Advantage}
+
+Our most striking finding is that frontier 2025--2026 models show minimal English advantage on standard benchmarks. \claudemodel achieves comparable or higher accuracy on several non-English languages (German: 0.98, Chinese: 0.96) than English (0.92) for \mgsm \directstrat inference. This contrasts sharply with \citet{ahuja2023mega}, who reported 10--30\% gaps for GPT-3.5/4 on similar tasks. The gap has not merely narrowed---for \claudemodel, it has effectively closed.
+
+This progress likely reflects improvements in multilingual training data curation, reinforcement learning from human feedback conducted in multiple languages, and better tokenizer coverage for non-Latin scripts. While mechanistic studies \cite{wendler2024llamas, zhang2024multilingual} have shown that models still use English-biased internal representations, our behavioral results suggest that this internal bias no longer manifests as a performance penalty at the output level.
+
+\subsection{Chain-of-Thought, Not Translation}
+
+The large lift from \selftranslate and \englishcot for \gptmodel on \mgsm ($+$0.31) initially appears to support the implicit translation hypothesis. However, this lift is primarily a {\bf chain-of-thought effect}: English itself improves by $+$0.30 from \directstrat (0.64) to \englishcot (0.94). \gptmodel struggles to extract correct numerical answers without explicit reasoning steps, regardless of language.
+
+When we isolate the translation component by comparing \selftranslate (mean 0.90) against \englishcot (mean 0.92) for non-English \mgsm inputs, the difference is only 0.02 in favor of \englishcot---meaning that explicit translation to English provides no additional benefit beyond what English-language reasoning already achieves. This is a much weaker signal than the 2--3.5 point self-translate benefits reported by \citet{etxaniz2023multilingual} for earlier models.
+
+\subsection{Hindi as Persistent Challenge}
+
+Hindi consistently shows the lowest accuracy on \belebele across both models and all strategies (0.80--0.90). This pattern persists even for \claudemodel, which achieves perfect scores on English, Chinese, Russian, and Swahili. The difficulty may relate to the specific \belebele items (passage domain or question complexity), Devanagari script processing challenges, or limitations in Hindi training data quality. Notably, Swahili---a lower-resource language---outperforms Hindi, suggesting that resource level alone does not explain the pattern.
+
+\subsection{Implications for Deployment}
+
+Our results have three practical implications. First, \claudemodel is ready for multilingual deployment without specialized prompting strategies: \directstrat inference achieves $>$0.90 accuracy across all tested languages. Second, \gptmodel benefits from explicit reasoning prompts, but this is a general finding about reasoning scaffolding, not specific to non-English contexts. Third, neither model requires English-pivoting to achieve strong multilingual performance, simplifying deployment pipelines that previously needed translation preprocessing.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+Our study has several limitations. First, {\bf sample size}: 50 items per language limits statistical power, and performance differences of 2--4\% may not achieve significance. Larger samples would enable more precise estimates and detection of smaller effects.
+
+Second, {\bf prompt confound}: our \directstrat prompt omits chain-of-thought reasoning, while both English-pivoting strategies include it. This creates an unfair comparison that inflates the apparent benefit of pivoting strategies, particularly for \gptmodel. A native-language CoT condition would provide a fairer baseline.
+
+Third, {\bf task coverage}: \mgsm and \belebele test mathematical reasoning and reading comprehension, respectively. Generative tasks such as summarization, creative writing, or open-ended question answering may reveal different multilingual patterns, as they require producing fluent text in the target language rather than selecting an answer.
+
+Fourth, {\bf deterministic decoding}: temperature~0 prevents estimation of within-condition variance, limiting statistical analysis to across-language variation rather than within-language confidence intervals.
+
+Fifth, {\bf model coverage}: we evaluate only two models. Including open-source models (\eg Llama-3, Mistral) would test whether the diminishing English advantage generalizes beyond closed-source frontier systems.

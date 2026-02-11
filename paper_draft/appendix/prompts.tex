@@ -1,0 +1,70 @@
+\section{Prompt Templates}
+\label{appendix:prompts}
+
+We provide the exact prompt templates used for each strategy across both benchmarks.
+
+\subsection{\mgsm Prompt Templates}
+
+\para{\directstrat.}
+\begin{quote}
+\small\ttfamily
+Solve the following math problem. Return ONLY the final numerical answer as a single integer. Do not show any work or explanation.\\[4pt]
+Problem: \{question\}\\[4pt]
+Answer:
+\end{quote}
+
+\para{\selftranslate.}
+\begin{quote}
+\small\ttfamily
+First, translate the following math problem to English. Then solve it step-by-step. Finally, return ONLY the final numerical answer as a single integer on the last line.\\[4pt]
+Problem: \{question\}
+\end{quote}
+
+\para{\englishcot.}
+\begin{quote}
+\small\ttfamily
+Think step-by-step in English to solve the following math problem. Show your reasoning in English, then return ONLY the final numerical answer as a single integer on the last line.\\[4pt]
+Problem: \{question\}
+\end{quote}
+
+\subsection{\belebele Prompt Templates}
+
+\para{\directstrat.}
+\begin{quote}
+\small\ttfamily
+Read the passage and answer the question by selecting the correct option (1, 2, 3, or 4). Return ONLY the option number.\\[4pt]
+Passage: \{passage\}\\[4pt]
+Question: \{question\}\\[4pt]
+Options:\\
+1. \{option1\}\\
+2. \{option2\}\\
+3. \{option3\}\\
+4. \{option4\}\\[4pt]
+Answer:
+\end{quote}
+
+\para{\selftranslate.}
+\begin{quote}
+\small\ttfamily
+First, translate the passage, question, and options to English. Then reason step-by-step to find the correct answer. Finally, return ONLY the option number (1, 2, 3, or 4) on the last line.\\[4pt]
+Passage: \{passage\}\\[4pt]
+Question: \{question\}\\[4pt]
+Options:\\
+1. \{option1\}\\
+2. \{option2\}\\
+3. \{option3\}\\
+4. \{option4\}
+\end{quote}
+
+\para{\englishcot.}
+\begin{quote}
+\small\ttfamily
+Think step-by-step in English to answer the following reading comprehension question. Show your reasoning in English, then return ONLY the option number (1, 2, 3, or 4) on the last line.\\[4pt]
+Passage: \{passage\}\\[4pt]
+Question: \{question\}\\[4pt]
+Options:\\
+1. \{option1\}\\
+2. \{option2\}\\
+3. \{option3\}\\
+4. \{option4\}
+\end{quote}

@@ -1,0 +1,867 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at templates/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. USE COMMAND TEMPLATES: Copy templates/paper_writing/commands/ to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Evaluating Linguistic Performance in LLMs: Cross-Language Equity and Implicit Translation Mechanisms
+
+## Executive Summary
+
+We evaluated two frontier LLMs — GPT-4.1 (OpenAI) and Claude Sonnet 4 (Anthropic) — across 8 languages, 3 prompting strategies, and 2 benchmarks (MGSM math reasoning, Belebele reading comprehension) to test whether these models exhibit performance degradation on non-English tasks and whether explicit English-pivoting strategies provide evidence for implicit internal translation mechanisms. Our experiments comprised **4,800 real API calls** across all conditions.
+
+**Key Findings:**
+
+1. **Claude Sonnet 4 shows remarkable multilingual parity.** On MGSM direct inference, Claude achieves 0.92 accuracy on English and *higher* accuracy on several non-English languages (German: 0.98, Chinese: 0.96, Bengali: 0.94). The English-to-non-English performance gap is not statistically significant.
+
+2. **GPT-4.1 shows a dramatic confound, not a language gap.** GPT-4.1&#39;s &#34;direct&#34; MGSM prompt (no chain-of-thought) yields low accuracy across all languages (English: 0.64), while self-translate and English CoT dramatically improve performance. This reflects a reasoning-strategy effect, not a translation effect.
+
+3. **English-pivoting provides no benefit for Claude Sonnet 4** on either benchmark. Self-translate and English CoT do not improve non-English accuracy, suggesting Claude&#39;s internal multilingual processing is already efficient.
+
+4. **Hindi/Belebele is the consistent weak spot.** Across both models and all strategies, Hindi consistently shows the lowest Belebele accuracy (0.80-0.90), suggesting a genuine low-resource penalty for this specific task-language combination.
+
+5. **Democratization scores are high** (0.86-0.97), with Claude achieving near-perfect cross-language equity (0.97 on Belebele direct).
+
+---
+
+## 1. Introduction
+
+### 1.1 Motivation
+
+Large Language Models are increasingly deployed at national scale in non-English-speaking countries. Notable examples include xAI&#39;s partnership with Venezuela and OpenAI&#39;s collaboration with Estonia. Yet capability evaluations remain predominantly English-centric, raising the question: are these models equitable across languages?
+
+Prior work has demonstrated that LLMs use English-biased internal representations (Wendler et al., 2024; Zhang et al., 2024), that self-translation to English improves performance (Etxaniz et al., 2023), and that English chain-of-thought reasoning transfers cross-lingually (Shi et al., 2022). However, these findings were established primarily on earlier models (GPT-3.5/4, Llama-2). Whether these patterns persist in 2025/2026 frontier models is an open empirical question.
+
+### 1.2 Research Questions
+
+**RQ1:** Do state-of-the-art LLMs exhibit significant performance degradation on non-English tasks compared to English?
+
+**RQ2:** Does explicit English-pivoting (self-translate, English CoT) improve non-English performance, providing behavioral evidence for implicit internal translation?
+
+**RQ3:** Does performance degradation correlate with language resource level?
+
+**RQ4:** Do different models show different multilingual capability profiles?
+
+### 1.3 Hypotheses
+
+- **H1:** LLMs show statistically significant performance degradation on non-English vs. English tasks.
+- **H2:** Explicit English-pivoting strategies improve non-English performance.
+- **H3:** Performance degradation correlates with language resource level.
+- **H4:** Different models show different multilingual capability profiles.
+
+---
+
+## 2. Methodology
+
+### 2.1 Experimental Design
+
+We use a **2 (models) x 3 (strategies) x 8 (languages) x 2 (tasks)** factorial design with 50 randomly sampled items per language per task (seed=42). Total: **4,800 API calls**.
+
+### 2.2 Models
+
+| Model | Provider | Access Method | Temperature |
+|-------|----------|---------------|-------------|
+| GPT-4.1 | OpenAI | Direct API | 0 |
+| Claude Sonnet 4 | Anthropic | OpenRouter | 0 |
+
+### 2.3 Benchmarks
+
+**MGSM (Multilingual Grade School Math):** 250 math word problems per language. Tests mathematical reasoning. Metric: exact match on final integer answer.
+
+**Belebele:** 900 reading comprehension questions per language with 4 multiple-choice options. Tests passage understanding. Metric: correct option selection (1-4).
+
+### 2.4 Languages (8 languages across 3 resource tiers)
+
+| Resource Level | MGSM Languages | Belebele Languages |
+|---------------|----------------|-------------------|
+| High | English, Chinese, German, French | English, Chinese, German, French |
+| Medium | Russian, Japanese | Russian, Japanese |
+| Low | Swahili, Bengali | Swahili, Hindi |
+
+### 2.5 Prompting Strategies
+
+1. **Direct:** Solve the problem in its original language. No chain-of-thought. Just return the answer.
+2. **Self-Translate:** Translate the problem to English first, then solve step-by-step. Return the final answer.
+3. **English CoT:** Reason step-by-step in English about the problem (presented in original language). Return the final answer.
+
+**Important design note:** The &#34;direct&#34; prompt asks for only the final answer with no reasoning steps, while both self-translate and English CoT include step-by-step reasoning. This means any lift from these strategies includes both (a) a translation/language effect and (b) a chain-of-thought reasoning effect. Comparing self-translate to English CoT on non-English inputs isolates the translation component.
+
+### 2.6 Statistical Analysis
+
+- **H1:** One-sample t-test on performance gaps (English - target), with Cohen&#39;s d effect sizes
+- **H2:** One-sample t-test on strategy lifts (strategy - direct), one-sided
+- **H3:** Spearman rank correlation between resource level and accuracy
+- **Significance level:** alpha = 0.05
+
+---
+
+## 3. Results
+
+### 3.1 Overall Accuracy
+
+#### MGSM (Math Reasoning)
+
+| Model | Strategy | EN | ZH | DE | FR | RU | JA | SW | BN | **Avg** |
+|-------|----------|---:|---:|---:|---:|---:|---:|---:|---:|--------:|
+| GPT-4.1 | direct | .640 | .520 | .560 | .680 | .700 | .500 | .640 | .560 | **.600** |
+| GPT-4.1 | self_translate | .600 | .940 | .960 | .860 | .960 | .860 | .820 | .900 | **.862** |
+| GPT-4.1 | english_cot | .940 | .940 | .960 | .900 | .940 | .880 | .840 | .920 | **.915** |
+| Claude Sonnet 4 | direct | .920 | .960 | .980 | .940 | .940 | .900 | .900 | .940 | **.935** |
+| Claude Sonnet 4 | self_translate | .920 | .940 | .960 | .940 | .940 | .920 | .880 | .940 | **.930** |
+| Claude Sonnet 4 | english_cot | 1.000 | .960 | .940 | .960 | .960 | .900 | .840 | .940 | **.938** |
+
+#### Belebele (Reading Comprehension)
+
+| Model | Strategy | EN | ZH | DE | FR | RU | JP | SW | HI | **Avg** |
+|-------|----------|---:|---:|---:|---:|---:|---:|---:|---:|--------:|
+| GPT-4.1 | direct | 1.000 | .920 | .920 | .940 | .980 | .940 | .980 | .820 | **.938** |
+| GPT-4.1 | self_translate | 1.000 | .960 | .940 | .940 | .980 | .980 | .980 | .800 | **.948** |
+| GPT-4.1 | english_cot | 1.000 | .940 | .960 | .980 | .980 | .940 | .980 | .820 | **.950** |
+| Claude Sonnet 4 | direct | 1.000 | 1.000 | .960 | .940 | 1.000 | .960 | 1.000 | .900 | **.970** |
+| Claude Sonnet 4 | self_translate | 1.000 | 1.000 | .960 | .940 | 1.000 | .960 | 1.000 | .880 | **.968** |
+| Claude Sonnet 4 | english_cot | 1.000 | 1.000 | .960 | .960 | .980 | .980 | .960 | .880 | **.965** |
+
+### 3.2 H1: Performance Gap Between English and Non-English
+
+#### Statistical Tests (one-sample t-test, H0: gap = 0)
+
+| Task | Model | Strategy | Mean Gap | t-stat | p-value | Sig | Cohen&#39;s d |
+|------|-------|----------|---------|--------|---------|-----|-----------|
+| MGSM | GPT-4.1 | direct | 0.046 | 1.53 | 0.176 | ns | 0.58 |
+| MGSM | GPT-4.1 | self_translate | **-0.300** | -14.33 | &lt;0.001 | *** | -5.42 |
+| MGSM | GPT-4.1 | english_cot | 0.029 | 1.83 | 0.118 | ns | 0.69 |
+| MGSM | Claude Sonnet 4 | direct | **-0.017** | -1.55 | 0.172 | ns | -0.59 |
+| MGSM | Claude Sonnet 4 | self_translate | -0.011 | -1.19 | 0.280 | ns | -0.45 |
+| MGSM | Claude Sonnet 4 | english_cot | **0.071** | 4.25 | 0.005 | ** | 1.60 |
+| Belebele | GPT-4.1 | direct | **0.071** | 3.50 | 0.013 | * | 1.32 |
+| Belebele | GPT-4.1 | self_translate | **0.060** | 2.47 | 0.049 | * | 0.93 |
+| Belebele | GPT-4.1 | english_cot | **0.057** | 2.65 | 0.038 | * | 1.00 |
+| Belebele | Claude Sonnet 4 | direct | 0.034 | 2.40 | 0.053 | ns | 0.91 |
+| Belebele | Claude Sonnet 4 | self_translate | 0.037 | 2.24 | 0.066 | ns | 0.85 |
+| Belebele | Claude Sonnet 4 | english_cot | **0.040** | 2.76 | 0.033 | * | 1.04 |
+
+**Key findings for H1:**
+
+- **GPT-4.1 MGSM self_translate shows a massive *negative* gap** (mean=-0.300, p&lt;0.001): non-English languages dramatically outperform English. This is because the direct English prompt has no reasoning steps, yielding only 0.64 accuracy, while self-translate adds chain-of-thought reasoning that boosts all languages to ~0.86-0.96.
+- **Claude Sonnet 4 on MGSM shows no significant English advantage** under direct or self-translate strategies. Non-English languages actually perform comparably or better than English.
+- **GPT-4.1 on Belebele shows a small but significant English advantage** (mean gap 0.057-0.071, p&lt;0.05), primarily driven by Hindi (0.82 vs English 1.00).
+- **Claude Sonnet 4 on Belebele shows borderline significance** (p=0.033-0.066), with very small gaps.
+
+**Verdict: H1 is partially supported.** Small English advantages exist on Belebele (primarily GPT-4.1), but MGSM shows no English advantage for Claude and an artifactual result for GPT-4.1. Modern frontier models show substantially reduced English bias compared to earlier generations.
+
+### 3.3 H2: Effect of English-Pivoting Strategies
+
+#### Non-English Language Lift (strategy - direct)
+
+| Task | Model | Strategy | Mean Lift | t-stat | p (one-sided) | Sig |
+|------|-------|----------|----------|--------|----------------|-----|
+| MGSM | GPT-4.1 | self_translate | **+0.306** | 8.10 | &lt;0.001 | *** |
+| MGSM | GPT-4.1 | english_cot | **+0.317** | 8.98 | &lt;0.001 | *** |
+| MGSM | Claude Sonnet 4 | self_translate | -0.006 | -1.00 | 0.822 | ns |
+| MGSM | Claude Sonnet 4 | english_cot | -0.009 | -0.75 | 0.759 | ns |
+| Belebele | GPT-4.1 | self_translate | +0.011 | 1.33 | 0.115 | ns |
+| Belebele | GPT-4.1 | english_cot | **+0.014** | 1.99 | 0.047 | * |
+| Belebele | Claude Sonnet 4 | self_translate | -0.003 | -1.00 | 0.822 | ns |
+| Belebele | Claude Sonnet 4 | english_cot | -0.006 | -0.68 | 0.739 | ns |
+
+**Key findings for H2:**
+
+- **GPT-4.1 MGSM shows enormous lift (+0.31)** from both strategies, but this is primarily a **chain-of-thought effect**, not a translation effect. Evidence: English itself improves from 0.64 (direct) to 0.94 (english_cot), a +0.30 lift. The self-translate lift for non-English languages (~0.31) is similar, suggesting the benefit comes from step-by-step reasoning, not from translation.
+- **Comparing self-translate vs. english_cot for GPT-4.1 non-English MGSM** (isolating translation effect): Self-translate mean=0.90, English CoT mean=0.92. The difference is small (+0.02 for CoT), suggesting minimal additional benefit from explicit translation when reasoning is already in English.
+- **Claude Sonnet 4 shows zero lift** from English-pivoting strategies on either benchmark. Direct inference already achieves 0.93-0.97 average accuracy, leaving little room for improvement.
+- **Belebele shows minimal lift across both models**, likely because reading comprehension at this level is already near ceiling.
+
+**Verdict: H2 is not supported as a translation effect.** The massive lift for GPT-4.1 MGSM is attributable to chain-of-thought reasoning, not to English translation. When controlling for reasoning (comparing self-translate vs. english_cot), the translation component is negligible. Claude Sonnet 4 shows no benefit from English pivoting at all.
+
+### 3.4 H3: Resource Level Correlation
+
+| Task | Model | Spearman rho | p-value | Sig |
+|------|-------|-------------|---------|-----|
+| MGSM | GPT-4.1 | -0.086 | 0.855 | ns |
+| MGSM | Claude Sonnet 4 | 0.693 | 0.084 | ns |
+| Belebele | GPT-4.1 | -0.496 | 0.258 | ns |
+| Belebele | Claude Sonnet 4 | -0.222 | 0.632 | ns |
+
+**Key findings for H3:**
+
+- No significant correlation between language resource level and accuracy in any condition.
+- For Belebele, low-resource languages (Swahili) actually perform *better* than some high-resource languages.
+- The expected pattern (high &gt; medium &gt; low) is not consistently observed.
+
+**Verdict: H3 is not supported.** Resource level does not predict performance in our data. This is notable — it suggests frontier models have made substantial progress in handling diverse languages.
+
+### 3.5 H4: Model Differences
+
+Claude Sonnet 4 substantially outperforms GPT-4.1 across most conditions:
+
+**MGSM Direct (most revealing comparison):**
+- Claude: avg=0.935 (range: 0.90-0.98)
+- GPT-4.1: avg=0.600 (range: 0.50-0.70)
+
+However, this comparison is misleading. GPT-4.1&#39;s low direct accuracy stems from its sensitivity to the &#34;just give the number&#34; prompt format. When given reasoning steps (English CoT), GPT-4.1 reaches avg=0.915 vs Claude&#39;s 0.938 — a much smaller gap.
+
+**Belebele Direct (fairer comparison):**
+- Claude: avg=0.970 (range: 0.90-1.00)
+- GPT-4.1: avg=0.938 (range: 0.82-1.00)
+
+Claude shows more consistent performance and higher accuracy, especially on Swahili (1.00 vs 0.98) and Hindi (0.90 vs 0.82).
+
+**Verdict: H4 is supported.** The models have distinctly different multilingual profiles. Claude Sonnet 4 is more robust to language variation, maintains higher accuracy with minimal prompting, and shows virtually no English bias. GPT-4.1 is more sensitive to prompt format but performs well with appropriate scaffolding.
+
+### 3.6 Democratization Scores
+
+| Task | Model | Direct | Self-Translate | English CoT |
+|------|-------|--------|---------------|-------------|
+| MGSM | GPT-4.1 | 0.857 | 0.898 | 0.953 |
+| MGSM | Claude Sonnet 4 | **0.954** | **0.969** | 0.938 |
+| Belebele | GPT-4.1 | 0.938 | 0.948 | 0.950 |
+| Belebele | Claude Sonnet 4 | **0.970** | **0.968** | **0.965** |
+
+Claude Sonnet 4 achieves consistently higher democratization scores, meaning more equitable performance across languages. GPT-4.1&#39;s low MGSM direct score (0.857) reflects its format sensitivity rather than genuine language bias.
+
+---
+
+## 4. Discussion
+
+### 4.1 The Disappearing English Advantage
+
+Our most striking finding is that **frontier 2025-2026 models show minimal English advantage on standard benchmarks**. Claude Sonnet 4 actually performs comparably or better on several non-English languages (German, Chinese) than English for MGSM. This contrasts sharply with findings from Ahuja et al. (2023) showing 10-30% gaps for GPT-3.5/4.
+
+This suggests that recent training improvements — likely including more balanced multilingual data and RLHF in multiple languages — have substantially narrowed the cross-language performance gap.
+
+### 4.2 Chain-of-Thought, Not Translation
+
+The massive lift from self-translate and English CoT for GPT-4.1 MGSM initially appears to support the implicit translation hypothesis. However, careful analysis reveals this is primarily a **chain-of-thought effect**: the same lift occurs for English itself (0.64 → 0.94). GPT-4.1 simply cannot reliably extract numerical answers without reasoning steps, regardless of language.
+
+When we control for chain-of-thought (comparing self-translate vs. English CoT for non-English inputs), the translation component adds only ~2 percentage points. This is a much weaker signal than the 15-30% translation benefits reported for earlier models.
+
+### 4.3 Hindi as the Persistent Challenge
+
+Hindi consistently shows the lowest accuracy on Belebele across both models and all strategies (0.80-0.90). This is noteworthy because Hindi is classified as a &#34;medium-resource&#34; language. The difficulty may relate to the specific Belebele items, the Devanagari script processing, or the domain of the passages. Further investigation with larger samples would help clarify this pattern.
+
+### 4.4 Implications for Deployment
+
+1. **Claude Sonnet 4 is ready for multilingual deployment** without specialized prompting strategies. Direct inference achieves &gt;0.90 accuracy across all tested languages.
+2. **GPT-4.1 benefits from explicit reasoning prompts** but this is a general finding, not specific to non-English contexts.
+3. **Neither model requires English-pivoting** to achieve strong multilingual performance, suggesting that the internal translation bottleneck documented in earlier work has been substantially mitigated.
+
+### 4.5 Limitations
+
+1. **Sample size:** 50 items per language limits statistical power. Performance differences of 2-4% may not achieve significance.
+2. **Prompt confound:** The direct prompt omits chain-of-thought, creating an unfair comparison with self-translate and English CoT. A fairer design would include a &#34;native-language CoT&#34; condition.
+3. **Task selection:** MGSM and Belebele test specific capabilities. Generative tasks (summarization, creative writing) may show different patterns.
+4. **Temperature 0:** Deterministic decoding means we cannot estimate within-condition variance, limiting statistical analysis to across-language variation.
+5. **API routing:** Claude accessed via OpenRouter may introduce latency/routing differences versus direct API access.
+6. **Only 2 models:** A broader model comparison would strengthen conclusions.
+
+### 4.6 Relation to Prior Work
+
+Our findings update and partially contradict prior work:
+- **Wendler et al. (2024):** Found English-biased internal representations in Llama-2. Our behavioral results suggest newer models may have mitigated this bias at the output level, even if internal representations remain English-influenced.
+- **Etxaniz et al. (2023):** Found self-translate improved performance by 10-15%. We find &lt;2% improvement for GPT-4.1 (when controlling for CoT) and 0% for Claude. The English pivot is no longer needed.
+- **Ahuja et al. (2023):** Found 10-30% gaps between English and non-English. We find gaps of 0-7%, representing substantial progress.
+
+---
+
+## 5. Conclusions
+
+1. **Frontier LLMs have largely closed the multilingual performance gap** on standard benchmarks. Claude Sonnet 4 shows near-perfect cross-language equity.
+2. **English-pivoting strategies (self-translate, English CoT) no longer provide meaningful benefits** for frontier models. The implicit translation bottleneck has been substantially mitigated.
+3. **GPT-4.1 is sensitive to prompt format** (requires reasoning scaffolding), but this is language-independent. Claude Sonnet 4 is more robust to prompt variation.
+4. **Resource level does not predict performance** in our data, suggesting frontier models have made progress on lower-resource languages.
+5. **Hindi remains a challenge** for Belebele reading comprehension across both models, warranting further investigation.
+
+### Future Directions
+
+- Add a **native-language CoT condition** to properly control for the reasoning effect
+- Test **generative tasks** (translation quality, summarization) where language-specific capabilities matter more
+- Evaluate **open-source models** (Llama-3, Mistral) alongside closed-source ones
+- Increase sample sizes for better statistical power
+- Test **truly low-resource languages** (e.g., Yoruba, Quechua) that may still show significant gaps
+
+---
+
+## 6. Experimental Details
+
+### 6.1 Runtime Statistics
+
+- **Total experiment time:** 16,147 seconds (4 hours 29 minutes)
+- **Total API calls:** 4,800
+- **API calls per condition:** 50
+- **Average response time:** ~3.4 seconds per call
+- **Models tested:** GPT-4.1 (OpenAI), Claude Sonnet 4 (OpenRouter)
+- **Date:** February 11, 2026
+- **Random seed:** 42
+
+### 6.2 Reproducibility
+
+All code, data, and results are available in this repository. To reproduce:
+
+```bash
+# Install dependencies
+uv sync
+
+# Run experiments (requires API keys)
+OPENAI_API_KEY=[REDACTED] OPENROUTER_KEY=[REDACTED] python3 src/run_experiments.py
+
+# Run analysis
+python3 src/analysis.py
+```
+
+### 6.3 Figures
+
+All figures are saved in the `figures/` directory:
+- `mgsm_*_by_language.png` — Accuracy by language and strategy for each model
+- `belebele_*_by_language.png` — Same for Belebele
+- `*_gap_heatmap.png` — Performance gap heatmaps (English - target)
+- `*_model_comparison.png` — Side-by-side model comparison
+- `strategy_lift_by_resource.png` — Strategy lift by resource level
+- `democratization_scores.png` — Democratization score comparison
+
+---
+
+## References
+
+- Ahuja, K., et al. (2023). MEGA: Multilingual Evaluation of Generative AI.
+- Etxaniz, J., et al. (2023). Do Multilingual Language Models Think Better in English?
+- Shi, F., et al. (2022). Language Models are Multilingual Chain-of-Thought Reasoners.
+- Wendler, C., et al. (2024). Do Llamas Work in English? On the Latent Language of Multilingual Transformers.
+- Zhang, B., et al. (2024). Unveiling Linguistic Regions in Large Language Models.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Plan: Evaluating Linguistic Performance in LLMs
+
+## Motivation &amp; Novelty Assessment
+
+### Why This Research Matters
+LLMs are increasingly deployed at national scale in non-English-speaking countries (e.g., xAI partnership with Venezuela, OpenAI with Estonia), yet capability evaluations remain overwhelmingly English-centric. Understanding whether these models have implicit internal translation mechanisms — and how much performance degrades across languages — is critical for equitable global deployment. Poor multilingual performance could mean millions of users receive substandard AI services.
+
+### Gap in Existing Work
+While Wendler et al. (2024) and Zhang et al. (2024) have shown mechanistic evidence of English-biased internal representations in Llama-2, and Ahuja et al. (2023) benchmarked GPT-3.5/4 multilingually, **no study has systematically compared state-of-the-art 2025 models (GPT-4.1, Claude Sonnet 4.5) across multiple prompting strategies on standardized multilingual benchmarks**. The existing benchmarks are from 2022-2023, and newer models may have closed — or widened — the gap. Additionally, the interaction between prompting strategy (direct, self-translate, XLT, English CoT) and language resource level remains underexplored for current frontier models.
+
+### Our Novel Contribution
+1. **Cross-model comparison on 2025 frontier models**: We evaluate GPT-4.1 and Claude Sonnet 4.5 on multilingual benchmarks, providing an updated snapshot of the multilingual landscape.
+2. **Prompting strategy × language interaction**: We systematically test whether explicit English-pivoting strategies (self-translate, XLT) still help with newer models, or if their improved multilingual training has reduced the need.
+3. **Evidence for implicit translation**: By comparing direct multilingual inference with English-pivoted strategies, performance differences serve as behavioral evidence for internal translation mechanisms.
+4. **Democratization analysis**: We measure cross-language equity using the democratization score, comparing high-resource vs. low-resource languages across models and strategies.
+
+### Experiment Justification
+- **Experiment 1 (Direct Multilingual Inference)**: Establishes baseline performance across languages — needed to quantify the performance gap.
+- **Experiment 2 (Self-Translate Strategy)**: If self-translating to English before solving improves accuracy, this is behavioral evidence of an internal English-processing bottleneck.
+- **Experiment 3 (English CoT Prompting)**: Tests whether English chain-of-thought reasoning helps non-English tasks, another signal of English-biased internal processing.
+- **Experiment 4 (Cross-Model Comparison)**: Different models may have different multilingual capabilities; comparing them reveals whether the English pivot is model-dependent.
+
+---
+
+## Research Question
+Do state-of-the-art LLMs (GPT-4.1, Claude Sonnet 4.5) exhibit significant performance degradation on non-English tasks compared to English, and does explicit English-pivoting (self-translate, English CoT) improve non-English performance — providing behavioral evidence for implicit internal translation mechanisms?
+
+## Background and Motivation
+LLMs trained predominantly on English data are deployed globally. Literature shows:
+- LLMs use English-biased internal representations (Wendler 2024, Zhang 2024)
+- Self-translation to English improves performance (Etxaniz 2023)
+- English CoT works cross-lingually (Shi 2022)
+- Low-resource languages suffer the most (Ahuja 2023)
+
+We need updated evidence on whether these patterns persist in newer, more capable models.
+
+## Hypothesis Decomposition
+
+**H1**: LLMs show statistically significant performance degradation on non-English vs. English tasks.
+- Metric: Accuracy difference (English - target language)
+- Success: Significant difference (p &lt; 0.05) for at least some languages
+
+**H2**: Explicit English-pivoting strategies (self-translate, English CoT) improve non-English performance.
+- Metric: Accuracy improvement from direct → self-translate/CoT
+- Success: Significant improvement (p &lt; 0.05), especially for non-Latin-script languages
+
+**H3**: Performance degradation correlates with language resource level (low-resource languages suffer more).
+- Metric: Correlation between language resource level and accuracy
+- Success: Significant negative correlation
+
+**H4**: Different models show different multilingual capability profiles.
+- Metric: Model × language interaction
+- Success: Significant interaction effect
+
+## Proposed Methodology
+
+### Approach
+We conduct a multi-factor experiment: **2 models × 3 prompting strategies × 8 languages × 2 tasks (MGSM + Belebele)**. We use real API calls to GPT-4.1 (via OpenAI) and Claude Sonnet 4.5 (via OpenRouter) to test each condition.
+
+### Task Selection
+1. **MGSM** (Math reasoning): Well-structured, has clear correct answers, tests reasoning ability. 250 problems per language. We use a sample of 50 per language for feasibility.
+2. **Belebele** (Reading comprehension): Multiple-choice with 4 options, tests understanding. 900 per language. We use a sample of 50 per language.
+
+### Language Selection (8 languages across resource levels)
+- **High-resource**: English (en), Chinese (zh), German (de), French (fr)
+- **Medium-resource**: Russian (ru), Japanese (ja)
+- **Low-resource**: Swahili (sw), Bengali (bn) [MGSM only; for Belebele: Hindi instead]
+
+### Prompting Strategies
+1. **Direct**: Prompt in the target language, solve in target language
+2. **Self-Translate**: Ask the model to translate the problem to English, then solve
+3. **English CoT**: Provide English chain-of-thought instructions, input in target language
+
+### Models
+1. **GPT-4.1** (via OpenAI API): State-of-the-art reasoning
+2. **Claude Sonnet 4.5** (via OpenRouter): Strong multilingual capabilities
+
+### Experimental Steps
+1. Load and sample datasets (50 items per language per task)
+2. Create prompt templates for each strategy
+3. Run API calls for all conditions (2 models × 3 strategies × 8 languages × 2 tasks × 50 items)
+4. Parse and evaluate responses
+5. Compute accuracy, democratization scores, and statistical tests
+6. Visualize results
+
+### Baselines
+- English performance serves as the ceiling baseline
+- Direct inference serves as the default baseline
+- Random performance: 25% for Belebele (4-choice), ~0% for MGSM
+
+### Evaluation Metrics
+- **Accuracy**: Primary metric (exact match for MGSM, correct choice for Belebele)
+- **Performance Gap**: English accuracy minus target language accuracy
+- **Democratization Score**: Average accuracy / best language accuracy (1.0 = perfect equity)
+- **Self-Translate Lift**: Accuracy(self-translate) - Accuracy(direct)
+
+### Statistical Analysis Plan
+- **H1**: Paired t-test or Wilcoxon signed-rank test (English vs. each language)
+- **H2**: Paired t-test (direct vs. self-translate/CoT per language)
+- **H3**: Spearman correlation (resource level rank vs. accuracy)
+- **H4**: Two-way ANOVA (model × language) or non-parametric equivalent
+- Significance level: α = 0.05 with Bonferroni correction for multiple comparisons
+- Effect sizes: Cohen&#39;s d for pairwise comparisons
+- Confidence intervals: 95% bootstrap CIs for accuracy estimates
+
+## Expected Outcomes
+- **H1 supported**: Non-English performance &lt; English, especially for low-resource languages
+- **H2 partially supported**: Self-translate helps more for low-resource languages; English CoT provides moderate improvement
+- **H3 supported**: Low-resource languages show larger performance gaps
+- **H4 supported**: Models differ in their multilingual profiles (e.g., one may be stronger on non-Latin scripts)
+
+If H2 is strongly supported (self-translate significantly helps), this provides behavioral evidence for implicit internal translation — the models &#34;think better&#34; when given English input explicitly, suggesting internal processing is English-biased.
+
+## Timeline and Milestones
+1. **Environment Setup &amp; Data Prep** (10 min): Install packages, validate datasets
+2. **Code Implementation** (30 min): Prompt templates, API calling code, evaluation
+3. **Run Experiments** (60-90 min): ~4,800 API calls total
+4. **Analysis &amp; Visualization** (30 min): Statistical tests, plots
+5. **Documentation** (20 min): REPORT.md, README.md
+
+## Potential Challenges
+- **API rate limits**: Mitigate with retry logic, exponential backoff
+- **Cost**: ~4,800 calls × ~200 tokens avg = ~1M tokens ≈ $10-30. Manageable.
+- **Response parsing**: MGSM needs numerical answer extraction; Belebele needs option extraction. Use robust regex patterns.
+- **Model availability**: If one model&#39;s API is down, focus on the other.
+
+## Success Criteria
+1. Experiments run successfully for all conditions
+2. Clear quantitative evidence for/against each hypothesis
+3. Statistical tests with proper corrections
+4. Informative visualizations showing cross-language patterns
+5. Comprehensive REPORT.md with actionable findings
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: Evaluating Linguistic Performance in LLMs
+
+## Research Area Overview
+
+Large language models (LLMs) trained predominantly on English data have demonstrated surprising multilingual capabilities, yet exhibit significant performance disparities across languages. This review synthesizes research on three interconnected themes: (1) how LLMs internally process multilingual inputs, (2) the extent of performance gaps across languages, and (3) methods to evaluate and improve multilingual LLM capabilities. The central hypothesis under investigation is that English-dominant training induces implicit internal translation mechanisms that can be detected and measured, with implications for equitable multilingual deployment.
+
+## Key Papers
+
+### 1. Wendler et al. (2024) — &#34;Do Llamas Work in English? On the Latent Language of Multilingual Transformers&#34;
+- **Source**: EPFL, arXiv:2402.10588 (233 citations)
+- **Key Contribution**: First empirical investigation of whether LLMs use English as an internal pivot language. Using logit lens on Llama-2 (7B/13B/70B), they identify three processing phases.
+- **Methodology**: Carefully constructed prompts (translation, repetition, cloze tasks) where the correct next token is unambiguous and language-attributable. Applied logit lens to decode intermediate layer representations. Tested on Chinese, German, French, Russian.
+- **Key Results**:
+  - **Phase 1** (early layers): High entropy, no language dominates — model builds feature representations.
+  - **Phase 2** (middle layers): Low entropy, English dominates — model operates in &#34;concept space&#34; biased toward English.
+  - **Phase 3** (final layers): Low entropy, target language dominates — model maps concepts to language-specific tokens.
+- **Nuanced Finding**: The model&#39;s internal lingua franca is not strictly English but rather *concepts biased toward English*. The &#34;concept space&#34; is partially orthogonal to token space.
+- **Code**: https://github.com/epfl-dlab/llm-latent-language
+- **Relevance**: Directly confirms the hypothesis about implicit internal translation. The three-phase model provides a concrete framework for understanding multilingual processing.
+
+### 2. Zhang/Zhao et al. (2024) — &#34;How do Large Language Models Handle Multilingualism?&#34; (NeurIPS 2024)
+- **Source**: NUS &amp; Alibaba DAMO, arXiv:2402.18815 (142 citations)
+- **Key Contribution**: Proposes MWork (Multilingual Workflow) hypothesis and PLND (Parallel Language-specific Neuron Detection) method.
+- **Methodology**: Decoded hidden embeddings layer-by-layer, classified into English/non-English. Developed PLND to identify language-specific neurons without labeled data. Verified MWork through selective neuron deactivation experiments on Vicuna and Mistral.
+- **MWork Hypothesis**: LLMs process multilingual inputs in three stages:
+  1. **Understand**: Convert multilingual input to unified representation
+  2. **Task-solve**: Reason in English (self-attention) + extract multilingual knowledge (feed-forward)
+  3. **Generate**: Produce output in original language
+- **Key Results**: Deactivating just 0.13% of language-specific neurons drops multilingual performance by 99%. Self-attention neurons decrease in task-solving layers (English reasoning), while feed-forward neurons remain consistent (multilingual knowledge storage).
+- **Code**: https://github.com/DAMO-NLP-SG/multilingual_analysis
+- **Relevance**: Provides mechanistic verification that LLMs reason internally in English while maintaining language-specific neurons for multilingual I/O.
+
+### 3. Etxaniz et al. (2023) — &#34;Do Multilingual Language Models Think Better in English?&#34;
+- **Source**: UPV/EHU &amp; Reka AI, arXiv:2308.01223
+- **Key Contribution**: Introduces &#34;self-translate&#34; — using the LLM itself to translate input to English before solving tasks, proving LLMs can&#39;t fully leverage capabilities when prompted in non-English.
+- **Methodology**: Compared direct inference vs. self-translate across XGLM (0.6B–7.5B) and LLaMA (7B–30B) on 5 tasks (XCOPA, XStoryCloze, XNLI, PAWS-X, MGSM).
+- **Key Results**: Self-translate consistently outperforms direct inference (avg +2–3.5 points). Effect is more pronounced for larger models and high-resource languages. External MT still outperforms self-translate but the gap narrows at scale.
+- **Code**: https://github.com/juletx/self-translate
+- **Relevance**: Behavioral evidence that LLMs are more capable than they appear in non-English — internal processing bottleneck exists.
+
+### 4. Huang et al. (2023) — &#34;Not All Languages Are Created Equal in LLMs&#34;
+- **Source**: Microsoft Research Asia, arXiv:2305.07004 (230 citations)
+- **Key Contribution**: Cross-Lingual-Thought (XLT) prompting template that systematically improves multilingual LLM capability by guiding cross-lingual reasoning.
+- **Methodology**: XLT template includes: role assignment, task input, cross-lingual thinking (retell in English), task analysis, CoT solving, output formatting. Evaluated on 7 benchmarks, 27 languages.
+- **Datasets Used**: MGSM, XCOPA, XNLI, PAWS-X, MKQA, XL-Sum, FLORES-200
+- **Key Results**: XLT achieves &gt;10 point improvement on MGSM and MKQA. Introduces &#34;democratization score&#34; — XLT reduces performance gap between best and average language performance.
+- **Relevance**: Demonstrates that explicitly leveraging English as pivot in prompting improves multilingual performance, supporting the internal translation hypothesis.
+
+### 5. Ahuja et al. (2023) — &#34;MEGA: Multilingual Evaluation of Generative AI&#34;
+- **Source**: Microsoft, arXiv:2303.12528 (354 citations)
+- **Key Contribution**: First comprehensive multilingual benchmarking of generative LLMs across 16 datasets, 70 languages, 4 LLMs.
+- **Methodology**: Evaluated GPT-3.5 (text-davinci-003, gpt-3.5-turbo), GPT-4, BLOOMZ on classification, QA, sequence labeling, generation, and responsible AI tasks. Compared with fine-tuned SOTA models.
+- **Key Results**: Significant English vs. non-English performance gap, especially for low-resource languages with non-Latin scripts. GPT-4 narrows but doesn&#39;t close the gap. Translate-test often outperforms direct multilingual prompting for low-resource languages.
+- **Relevance**: Provides the evaluation methodology and baseline results against which multilingual improvements can be measured.
+
+### 6. Shi et al. (2022) — &#34;Language Models are Multilingual Chain-of-Thought Reasoners&#34;
+- **Source**: Google, arXiv:2210.03057 (521 citations)
+- **Key Contribution**: Introduces MGSM benchmark (multilingual grade school math, 11 languages). Shows English CoT prompting works across languages.
+- **Datasets**: MGSM — 250 problems per language × 11 languages
+- **Key Results**: Using English CoT on non-English inputs significantly outperforms native-language CoT, providing early evidence for English as effective pivot language.
+- **Relevance**: Key benchmark for multilingual reasoning evaluation; finding that English CoT works cross-lingually supports the internal pivot hypothesis.
+
+### 7. Bandarkar et al. (2023) — &#34;The Belebele Benchmark&#34;
+- **Source**: Meta, arXiv:2308.16884 (250 citations)
+- **Key Contribution**: Parallel reading comprehension dataset in 122 language variants covering high, medium, and low-resource languages.
+- **Methodology**: 900 questions based on FLORES-200 passages, professionally translated with quality control. Multiple-choice format.
+- **Relevance**: Most linguistically diverse benchmark available; enables fine-grained comparison across language families and resource levels.
+
+### 8. Hu et al. (2020) — &#34;XTREME: A Massively Multilingual Multi-task Benchmark&#34;
+- **Source**: Google/CMU, arXiv:2003.11080 (1092 citations)
+- **Key Contribution**: Foundational multilingual benchmark covering 9 tasks across 40 languages.
+- **Tasks**: Sentence classification, structured prediction, QA, sentence retrieval
+- **Relevance**: Standard benchmark for cross-lingual transfer evaluation; widely used as baseline for multilingual model comparison.
+
+## Common Methodologies
+
+### Evaluation Approaches
+1. **Logit Lens / Probing**: Decoding intermediate layer representations to identify internal language (Wendler et al., 2024; Zhang et al., 2024)
+2. **Translate-Test**: Translating non-English inputs to English before inference (Shi et al., 2022; Ahuja et al., 2023)
+3. **Self-Translate**: Using the LLM itself to translate before solving (Etxaniz et al., 2023)
+4. **Cross-Lingual Prompting**: English-language prompts for non-English inputs (Huang et al., 2023)
+5. **Neuron Detection/Deactivation**: Identifying and ablating language-specific neurons (Zhang et al., 2024)
+6. **Parallel Benchmarking**: Using semantically equivalent test sets across languages (Belebele, XNLI, MGSM)
+
+### Models Commonly Evaluated
+- **Llama-2 family** (7B/13B/70B): Most studied for internal mechanisms due to open weights
+- **GPT-3.5 / GPT-4**: Strongest multilingual performance but closed-source
+- **BLOOMZ**: Open-source, explicitly multilingual (46 languages)
+- **Mistral / Vicuna**: Open-source models used for mechanistic analysis
+- **XLM-RoBERTa / mBERT / mT5**: Encoder models for cross-lingual transfer baselines
+
+## Standard Baselines
+- **Zero-shot cross-lingual transfer**: Fine-tune on English, evaluate on other languages
+- **Translate-test with external MT**: NLLB-200, Google Translate
+- **Few-shot in-context learning**: Multilingual demonstrations
+- **Chain-of-thought prompting**: English CoT for multilingual reasoning
+
+## Evaluation Metrics
+- **Accuracy**: Classification, QA, reasoning tasks (XNLI, XCOPA, MGSM, Belebele)
+- **F1 Score**: Span prediction QA (XQuAD, MLQA)
+- **ROUGE-L**: Summarization (XLSum)
+- **BLEU/SacreBLEU**: Machine translation (FLORES)
+- **Democratization Score**: Ratio of average to best language performance (Huang et al., 2023)
+
+## Datasets in the Literature
+| Dataset | Languages | Task | Used In |
+|---------|-----------|------|---------|
+| MGSM | 11 | Math reasoning | Shi 2022, Huang 2023, Etxaniz 2023, Zhang 2024 |
+| XNLI | 15 | NLI | Huang 2023, Ahuja 2023, Etxaniz 2023 |
+| XCOPA | 11 | Commonsense reasoning | Huang 2023, Ahuja 2023, Etxaniz 2023 |
+| Belebele | 122 | Reading comprehension | Bandarkar 2023 |
+| PAWS-X | 7 | Paraphrase identification | Huang 2023, Ahuja 2023 |
+| XQuAD | 10 | Span QA | Zhang 2024, Ahuja 2023 |
+| MLQA | 7 | Cross-lingual QA | Ahuja 2023 |
+| XLSum | 44 | Summarization | Huang 2023, Zhang 2024 |
+| FLORES-200 | 204 | Translation | Huang 2023 |
+| MMLU-ProX | Multiple | Knowledge evaluation | Son 2024 |
+
+## Gaps and Opportunities
+
+1. **Mechanistic studies limited to Llama-2**: Wendler et al. show initial evidence that Mistral behaves similarly, but systematic study across model families (Qwen, Gemma, etc.) is needed.
+2. **Tasks are mostly simple**: Current probing uses translation and cloze tasks. More complex reasoning, cultural knowledge, and generation tasks remain unexplored.
+3. **Low-resource languages under-studied**: Most experiments focus on well-resourced languages (Chinese, German, French, Spanish). The behavior of the &#34;English pivot&#34; for truly low-resource languages (Swahili, Yoruba, etc.) is less understood.
+4. **Causal vs. correlational evidence**: The three-phase model is descriptive. Causal interventions (e.g., activation patching) could provide stronger evidence about whether English pivoting is *necessary* or merely a *side effect*.
+5. **Impact on downstream bias**: If LLMs reason through English-biased concepts, this could propagate Anglocentric biases into outputs across all languages — a largely unexplored area.
+
+## Recommendations for Our Experiment
+
+Based on this literature review:
+
+- **Recommended datasets**: MGSM (reasoning across languages), XNLI (understanding), Belebele (reading comprehension with widest language coverage), XCOPA (commonsense)
+- **Recommended baselines**: Direct inference, translate-test (external MT), self-translate, English CoT prompting, XLT prompting
+- **Recommended metrics**: Accuracy (primary), democratization score (cross-language equity), per-language performance breakdown
+- **Recommended models**: At minimum one open-source model (Llama family for mechanistic analysis) and one API model (GPT-4 or Claude for performance benchmarking)
+- **Methodological considerations**:
+  - Use parallel benchmarks where possible to ensure fair cross-language comparison
+  - Include both high-resource (German, French, Chinese) and low-resource (Swahili, Bengali) languages
+  - Consider logit lens analysis to detect internal translation if using open-weight models
+  - Report per-language results, not just averages, to capture performance disparities
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+3. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+4. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+5. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+6. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+7. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+8. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+9. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Create paper_draft/commands/ directory with:
+   - math.tex: Math notation macros (copy from templates/paper_writing/commands/)
+   - general.tex: Formatting macros (copy from templates/paper_writing/commands/)
+   - macros.tex: Project-specific term definitions
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read templates/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

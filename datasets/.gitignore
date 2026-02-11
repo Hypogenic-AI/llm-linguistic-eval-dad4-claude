@@ -1,0 +1,14 @@
+# Ignore all dataset files (large binary/data files)
+*.arrow
+*.parquet
+*.tsv
+*.csv
+*.jsonl
+*.json
+*.bin
+*.pt
+*.safetensors
+
+# Keep README and gitignore
+!README.md
+!.gitignore

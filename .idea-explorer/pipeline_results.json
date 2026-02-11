@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/llm-linguistic-eval-dad4-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/llm-linguistic-eval-dad4-claude/literature_review.md",
+        "resources_catalog": "/workspaces/llm-linguistic-eval-dad4-claude/resources.md",
+        "papers_dir": "/workspaces/llm-linguistic-eval-dad4-claude/papers",
+        "datasets_dir": "/workspaces/llm-linguistic-eval-dad4-claude/datasets",
+        "code_dir": "/workspaces/llm-linguistic-eval-dad4-claude/code"
+      },
+      "log_file": "/workspaces/llm-linguistic-eval-dad4-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/llm-linguistic-eval-dad4-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 1109.2581322193146
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 16843.5134165287,
+      "log_file": "/workspaces/llm-linguistic-eval-dad4-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/llm-linguistic-eval-dad4-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/llm-linguistic-eval-dad4-claude"
+}

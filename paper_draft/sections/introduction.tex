@@ -1,0 +1,19 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Large language models are no longer English-only tools. They power government services in Estonia, educational platforms across Southeast Asia, and customer-facing products in virtually every major language market. Yet a fundamental question remains open: {\bf do these models actually work as well in Swahili as they do in English?}
+
+Prior mechanistic work suggests they should not. \citet{wendler2024llamas} showed that Llama-2 uses English-biased internal representations even when processing non-English inputs, operating through a three-phase pipeline: encode in the source language, reason in an English-biased concept space, then decode back to the target language. \citet{zhang2024multilingual} confirmed this pattern through neuron-level analysis, finding that deactivating just 0.13\% of language-specific neurons in Vicuna drops multilingual performance by 99\%. Behavioral studies reinforced these findings: \citet{etxaniz2023multilingual} demonstrated that ``self-translating'' inputs to English before solving tasks improved accuracy by 2--3.5 points across multiple benchmarks, and \citet{shi2022language} showed that English \chainofthought prompting outperforms native-language reasoning even on non-English inputs.
+
+However, these results were established on earlier model generations---GPT-3.5/4, Llama-2, and XGLM---using data collected in 2022--2023. In the intervening years, frontier models have undergone substantial improvements in multilingual training data, reinforcement learning from human feedback in multiple languages, and architectural refinements. {\bf Whether the English-processing bottleneck persists in 2025--2026 frontier models is an open empirical question.}
+
+We address this question through a controlled factorial experiment evaluating \gptmodel and \claudemodel across 8 languages spanning three resource tiers, 3 prompting strategies (direct, self-translate, and English chain-of-thought), and 2 standardized benchmarks (\mgsm for mathematical reasoning and \belebele for reading comprehension). Our design totals 4{,}800 real API calls, enabling systematic comparison across all conditions.
+
+Our results paint a strikingly different picture from prior work:
+
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+    \item We find that \claudemodel achieves {\bf near-perfect cross-language equity}, with a democratization score of 0.97 on \belebele and no statistically significant English advantage on \mgsm direct inference ($p = 0.17$).
+    \item We show that {\bf English-pivoting provides no benefit} for \claudemodel on either benchmark, and that the apparent benefit for \gptmodel is attributable to chain-of-thought reasoning rather than translation.
+    \item We demonstrate that {\bf language resource level does not predict performance} in our data (all Spearman correlations non-significant), suggesting frontier models have made substantial progress on lower-resource languages.
+    \item We identify a {\bf prompt-format sensitivity} in \gptmodel that produces artifactually low direct-inference scores, highlighting the importance of controlling for reasoning scaffolding when evaluating multilingual performance.
+\end{itemize}

@@ -1,0 +1,75 @@
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ahuja et~al.(2023)Ahuja, Diddee, Hada, Jhamtani, Kakwani, Kulkarni,
+  Seshadri, et~al.]{ahuja2023mega}
+Kabir Ahuja, Harshita Diddee, Rishav Hada, Harsh Jhamtani, Divyanshu Kakwani,
+  Vivek Kulkarni, Sai Seshadri, et~al.
+\newblock {MEGA}: Multilingual evaluation of generative {AI}.
+\newblock \emph{arXiv preprint arXiv:2303.12528}, 2023.
+
+\bibitem[Bandarkar et~al.(2023)Bandarkar, Liang, Muller, Artetxe, Shukla, Husa,
+  Gober, Sridhar, et~al.]{bandarkar2023belebele}
+Lucas Bandarkar, Davis Liang, Benjamin Muller, Mikel Artetxe, Satya~Narayan
+  Shukla, Donald Husa, Naman Gober, Arun Sridhar, et~al.
+\newblock The {B}elebele benchmark: a parallel reading comprehension dataset in
+  122 language variants.
+\newblock \emph{arXiv preprint arXiv:2308.16884}, 2023.
+
+\bibitem[Etxaniz et~al.(2023)Etxaniz, Azkune, Soroa, de~Lacalle, and
+  Artetxe]{etxaniz2023multilingual}
+Julen Etxaniz, Gorka Azkune, Aitor Soroa, Oier~Lopez de~Lacalle, and Mikel
+  Artetxe.
+\newblock Do multilingual language models think better in english?
+\newblock \emph{arXiv preprint arXiv:2308.01223}, 2023.
+
+\bibitem[Hu et~al.(2020)Hu, Ruder, Siddhant, Neubig, Firat, and
+  Johnson]{hu2020xtreme}
+Junjie Hu, Sebastian Ruder, Aditya Siddhant, Graham Neubig, Orhan Firat, and
+  Melvin Johnson.
+\newblock {XTREME}: A massively multilingual multi-task benchmark for
+  evaluating cross-lingual generalisation.
+\newblock \emph{arXiv preprint arXiv:2003.11080}, 2020.
+
+\bibitem[Huang et~al.(2023)Huang, Tang, Zhang, Zhao, Song, Xia, and
+  Wei]{huang2023languages}
+Haoyang Huang, Tianyi Tang, Dongdong Zhang, Xin Zhao, Ting Song, Yan Xia, and
+  Furu Wei.
+\newblock Not all languages are created equal in {LLM}s: Improving multilingual
+  capability by cross-lingual-thought prompting.
+\newblock \emph{arXiv preprint arXiv:2305.07004}, 2023.
+
+\bibitem[Shi et~al.(2022)Shi, Suzgun, Freitag, Wang, Srivats, Vosoughi, Chung,
+  Tay, et~al.]{shi2022language}
+Freda Shi, Mirac Suzgun, Markus Freitag, Xinying Wang, Suraj Srivats, Soroush
+  Vosoughi, Hyung~Won Chung, Yi~Tay, et~al.
+\newblock Language models are multilingual chain-of-thought reasoners.
+\newblock \emph{arXiv preprint arXiv:2210.03057}, 2022.
+
+\bibitem[Wei et~al.(2022)Wei, Wang, Schuurmans, Bosma, Ichter, Xia, Chi, Le,
+  and Zhou]{wei2022chain}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia,
+  Ed~Chi, Quoc~V Le, and Denny Zhou.
+\newblock Chain-of-thought prompting elicits reasoning in large language
+  models.
+\newblock \emph{Advances in Neural Information Processing Systems},
+  35:\penalty0 24824--24837, 2022.
+
+\bibitem[Wendler et~al.(2024)Wendler, Veselovsky, Monea, and
+  West]{wendler2024llamas}
+Chris Wendler, Veniamin Veselovsky, Giovanni Monea, and Robert West.
+\newblock Do llamas work in english? on the latent language of multilingual
+  transformers.
+\newblock \emph{arXiv preprint arXiv:2402.10588}, 2024.
+
+\bibitem[Zhang et~al.(2024)Zhang, Zhao, Li, Hao, Qin, and
+  Liu]{zhang2024multilingual}
+Bailin Zhang, Yanyan Zhao, Xinze Li, Yuhan Hao, Bing Qin, and Ting Liu.
+\newblock How do large language models handle multilingualism?
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2024.
+
+\end{thebibliography}

@@ -1,0 +1,89 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Experimental Design}
+\label{sec:design}
+
+We use a $2 \times 3 \times 8 \times 2$ factorial design crossing models, prompting strategies, languages, and tasks. Each cell contains 50 randomly sampled items (seed=42), yielding 4{,}800 total API calls.
+
+\subsection{Models}
+\label{sec:models}
+
+We evaluate two frontier LLMs representing different providers and training paradigms:
+
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+    \item \gptmodel (OpenAI), accessed via the OpenAI API with temperature 0.
+    \item \claudemodel (Anthropic), accessed via OpenRouter with temperature 0.
+\end{itemize}
+
+Both models represent the state of the art as of early 2026. We use deterministic decoding (temperature 0) to ensure reproducibility.
+
+\subsection{Benchmarks}
+\label{sec:benchmarks}
+
+\para{\mgsm (Multilingual Grade School Math).}
+Introduced by \citet{shi2022language}, \mgsm contains 250 grade-school math word problems per language across 11 languages. Each problem requires multi-step arithmetic reasoning. We evaluate using exact match on the final integer answer.
+
+\para{\belebele (Reading Comprehension).}
+Introduced by \citet{bandarkar2023belebele}, \belebele provides 900 parallel reading comprehension questions per language across 122 language variants. Each question offers four multiple-choice options. We evaluate using correct option selection.
+
+For both benchmarks, we randomly sample 50 items per language to balance experimental coverage with API cost constraints.
+
+\subsection{Languages}
+\label{sec:languages}
+
+We select 8 languages across three resource tiers, as shown in \tabref{tab:languages}. The tiers reflect approximate training data availability in typical LLM pretraining corpora. We note that \mgsm and \belebele have slightly different language coverage in the low-resource tier: we use Bengali for \mgsm and Hindi for \belebele, as these are the available options in each benchmark.
+
+\begin{table}[t]
+    \centering
+    \small
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        \textbf{Tier} & \textbf{Languages} & \textbf{Scripts} & \textbf{Codes} \\
+        \midrule
+        \highresource & English, Chinese, German, French & Latin, CJK, Latin, Latin & en, zh, de, fr \\
+        \medresource & Russian, Japanese & Cyrillic, CJK & ru, ja \\
+        \lowresource & Swahili, Bengali/Hindi & Latin, Devanagari & sw, bn/hi \\
+        \bottomrule
+    \end{tabular}
+    \caption{Language selection across resource tiers. Bengali is used for \mgsm and Hindi for \belebele in the low-resource tier based on benchmark availability.}
+    \label{tab:languages}
+\end{table}
+
+\subsection{Prompting Strategies}
+\label{sec:strategies}
+
+We test three prompting strategies that vary in the degree of explicit English involvement:
+
+\begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=2pt]
+    \item \textbf{\directstrat:} The problem is presented in its original language. The model is instructed to return only the final answer with no reasoning steps.
+    \item \textbf{\selftranslate:} The model is first asked to translate the problem to English, then solve it step-by-step, and finally return the answer.
+    \item \textbf{\englishcot:} The model is instructed to reason step-by-step in English about the problem (presented in its original language) and return the final answer.
+\end{enumerate}
+
+An important design consideration is that \directstrat omits \chainofthought reasoning, while both \selftranslate and \englishcot include it. This means any observed lift from these strategies confounds language effects with reasoning effects. We address this confound analytically by comparing \selftranslate against \englishcot on non-English inputs---since both include \chainofthought reasoning, any difference between them isolates the translation component.
+
+\subsection{Evaluation Metrics}
+\label{sec:metrics}
+
+\para{Accuracy.} Primary metric: exact match for \mgsm (parsed integer), correct option for \belebele.
+
+\para{Performance gap.} English accuracy minus target-language accuracy, averaged across non-English languages. Positive values indicate English advantage.
+
+\para{Democratization score.} Following \citet{huang2023languages}, we compute the ratio of average accuracy to best-language accuracy. A score of 1.0 indicates perfect cross-language equity.
+
+\para{Strategy lift.} Accuracy under a given strategy minus accuracy under \directstrat, computed per non-English language.
+
+\subsection{Statistical Analysis}
+\label{sec:stats}
+
+We test four hypotheses:
+
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
+    \item \textbf{H1:} LLMs show significant English advantage (one-sample $t$-test on performance gaps, $H_0$: gap $= 0$).
+    \item \textbf{H2:} English-pivoting improves non-English performance (one-sample $t$-test on strategy lifts, one-sided).
+    \item \textbf{H3:} Performance correlates with language resource level (Spearman rank correlation).
+    \item \textbf{H4:} Models differ in multilingual profiles (cross-model comparison).
+\end{itemize}
+
+We use $\alpha = 0.05$ and report Cohen's $d$ effect sizes for all $t$-tests.

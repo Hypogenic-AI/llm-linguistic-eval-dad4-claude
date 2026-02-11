@@ -1,0 +1,629 @@
+{
+  "metadata": {
+    "timestamp": "2026-02-11T17:08:31.304876",
+    "seed": 42,
+    "samples_per_language": 50,
+    "models": [
+      "gpt-4.1",
+      "claude-sonnet-4"
+    ],
+    "strategies": [
+      "direct",
+      "self_translate",
+      "english_cot"
+    ],
+    "total_time_seconds": 16147.198853731155
+  },
+  "mgsm": {
+    "gpt-4.1": {
+      "direct": {
+        "en": {
+          "accuracy": 0.64,
+          "language": "English",
+          "n_correct": 32,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.52,
+          "language": "Chinese",
+          "n_correct": 26,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.56,
+          "language": "German",
+          "n_correct": 28,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.68,
+          "language": "French",
+          "n_correct": 34,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.7,
+          "language": "Russian",
+          "n_correct": 35,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.5,
+          "language": "Japanese",
+          "n_correct": 25,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.64,
+          "language": "Swahili",
+          "n_correct": 32,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.56,
+          "language": "Bengali",
+          "n_correct": 28,
+          "n_total": 50
+        }
+      },
+      "self_translate": {
+        "en": {
+          "accuracy": 0.6,
+          "language": "English",
+          "n_correct": 30,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.94,
+          "language": "Chinese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.86,
+          "language": "French",
+          "n_correct": 43,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.96,
+          "language": "Russian",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.86,
+          "language": "Japanese",
+          "n_correct": 43,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.82,
+          "language": "Swahili",
+          "n_correct": 41,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.9,
+          "language": "Bengali",
+          "n_correct": 45,
+          "n_total": 50
+        }
+      },
+      "english_cot": {
+        "en": {
+          "accuracy": 0.94,
+          "language": "English",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.94,
+          "language": "Chinese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.9,
+          "language": "French",
+          "n_correct": 45,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.94,
+          "language": "Russian",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.88,
+          "language": "Japanese",
+          "n_correct": 44,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.84,
+          "language": "Swahili",
+          "n_correct": 42,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.92,
+          "language": "Bengali",
+          "n_correct": 46,
+          "n_total": 50
+        }
+      }
+    },
+    "claude-sonnet-4": {
+      "direct": {
+        "en": {
+          "accuracy": 0.92,
+          "language": "English",
+          "n_correct": 46,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.96,
+          "language": "Chinese",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.98,
+          "language": "German",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.94,
+          "language": "Russian",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.9,
+          "language": "Japanese",
+          "n_correct": 45,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.9,
+          "language": "Swahili",
+          "n_correct": 45,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.94,
+          "language": "Bengali",
+          "n_correct": 47,
+          "n_total": 50
+        }
+      },
+      "self_translate": {
+        "en": {
+          "accuracy": 0.92,
+          "language": "English",
+          "n_correct": 46,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.94,
+          "language": "Chinese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.94,
+          "language": "Russian",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.92,
+          "language": "Japanese",
+          "n_correct": 46,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.88,
+          "language": "Swahili",
+          "n_correct": 44,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.94,
+          "language": "Bengali",
+          "n_correct": 47,
+          "n_total": 50
+        }
+      },
+      "english_cot": {
+        "en": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zh": {
+          "accuracy": 0.96,
+          "language": "Chinese",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "de": {
+          "accuracy": 0.94,
+          "language": "German",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "fr": {
+          "accuracy": 0.96,
+          "language": "French",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "ru": {
+          "accuracy": 0.96,
+          "language": "Russian",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "ja": {
+          "accuracy": 0.9,
+          "language": "Japanese",
+          "n_correct": 45,
+          "n_total": 50
+        },
+        "sw": {
+          "accuracy": 0.84,
+          "language": "Swahili",
+          "n_correct": 42,
+          "n_total": 50
+        },
+        "bn": {
+          "accuracy": 0.94,
+          "language": "Bengali",
+          "n_correct": 47,
+          "n_total": 50
+        }
+      }
+    }
+  },
+  "belebele": {
+    "gpt-4.1": {
+      "direct": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 0.92,
+          "language": "Chinese",
+          "n_correct": 46,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.92,
+          "language": "German",
+          "n_correct": 46,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 0.98,
+          "language": "Russian",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.94,
+          "language": "Japanese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 0.98,
+          "language": "Swahili",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.82,
+          "language": "Hindi",
+          "n_correct": 41,
+          "n_total": 50
+        }
+      },
+      "self_translate": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 0.96,
+          "language": "Chinese",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.94,
+          "language": "German",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 0.98,
+          "language": "Russian",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.98,
+          "language": "Japanese",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 0.98,
+          "language": "Swahili",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.8,
+          "language": "Hindi",
+          "n_correct": 40,
+          "n_total": 50
+        }
+      },
+      "english_cot": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 0.94,
+          "language": "Chinese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.98,
+          "language": "French",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 0.98,
+          "language": "Russian",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.94,
+          "language": "Japanese",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 0.98,
+          "language": "Swahili",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.82,
+          "language": "Hindi",
+          "n_correct": 41,
+          "n_total": 50
+        }
+      }
+    },
+    "claude-sonnet-4": {
+      "direct": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 1.0,
+          "language": "Chinese",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 1.0,
+          "language": "Russian",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.96,
+          "language": "Japanese",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 1.0,
+          "language": "Swahili",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.9,
+          "language": "Hindi",
+          "n_correct": 45,
+          "n_total": 50
+        }
+      },
+      "self_translate": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 1.0,
+          "language": "Chinese",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.94,
+          "language": "French",
+          "n_correct": 47,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 1.0,
+          "language": "Russian",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.96,
+          "language": "Japanese",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 1.0,
+          "language": "Swahili",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.88,
+          "language": "Hindi",
+          "n_correct": 44,
+          "n_total": 50
+        }
+      },
+      "english_cot": {
+        "eng": {
+          "accuracy": 1.0,
+          "language": "English",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "zho_Hans": {
+          "accuracy": 1.0,
+          "language": "Chinese",
+          "n_correct": 50,
+          "n_total": 50
+        },
+        "deu_Latn": {
+          "accuracy": 0.96,
+          "language": "German",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "fra_Latn": {
+          "accuracy": 0.96,
+          "language": "French",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "rus_Cyrl": {
+          "accuracy": 0.98,
+          "language": "Russian",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "jpn_Jpan": {
+          "accuracy": 0.98,
+          "language": "Japanese",
+          "n_correct": 49,
+          "n_total": 50
+        },
+        "swh_Latn": {
+          "accuracy": 0.96,
+          "language": "Swahili",
+          "n_correct": 48,
+          "n_total": 50
+        },
+        "hin_Deva": {
+          "accuracy": 0.88,
+          "language": "Hindi",
+          "n_correct": 44,
+          "n_total": 50
+        }
+      }
+    }
+  }
+}
